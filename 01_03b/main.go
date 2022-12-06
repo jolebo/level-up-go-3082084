@@ -1,6 +1,8 @@
 package main
 
 import (
+	"embed"
+	"encoding/json"
 	"log"
 	"math/rand"
 	"time"
@@ -9,13 +11,24 @@ import (
 const path = "entries.json"
 
 // raffleEntry is the struct we unmarshal raffle entries into
+//
+//go:embed entries.json
+var files embed.FS
+
 type raffleEntry struct {
-	// TODO: Fill in definition
+	Id,Name,Country string
 }
 
 // importData reads the raffle entries from file and creates the entries slice.
 func importData() []raffleEntry {
-	panic("NOT IMPLEMENTED")
+	
+	data, _ := files.ReadFile(path)
+	dt := []raffleEntry{}
+	err := json.Unmarshal(data,&dt)
+	if err != nil {
+		panic("Error when unmarshaling json")
+	}
+	return dt
 }
 
 // getWinner returns a random winner from a slice of raffle entries.
